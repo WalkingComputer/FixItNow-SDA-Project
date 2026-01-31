@@ -253,5 +253,67 @@ namespace FixItNow.Application.Services
 
             await _auditRepository.AddAsync(auditLog);
         }
+
+        /// <summary>
+        /// ✨ Create ticket with resident-selected technician (NO ADMIN INVOLVED)
+        /// </summary>
+        public async Task<Ticket> CreateTicketAsync(CreateTicketRequest request, int selectedTechnicianId)
+        {
+            var allTickets = await _ticketRepository.GetAllAsync();
+            var nextTicketId = allTickets.Any() ? allTickets.Max(t => t.TicketId) + 1 : 1;
+
+            var ticket = new Ticket
+            {
+                TicketId = nextTicketId,
+                TicketCode = $"TKT-{nextTicketId:D5}",
+                Title = request.Title,
+                Description = request.Description,
+                CategoryId = request.CategoryId,
+                LocationId = request.LocationId,
+                PriorityId = request.PriorityId,
+                StatusId = 2, // Directly set to "Assigned" since technician is selected
+                CreatedByUserId = request.CreatedByUserId,
+                SelectedTechnicianId = selectedTechnicianId,
+                CurrentTechnicianId = selectedTechnicianId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _ticketRepository.AddAsync(ticket);
+
+            // Create assignment record
+            var allAssignments = await _assignmentRepository.GetHistoryByTicketAsync(nextTicketId);
+            var nextAssignmentId = allAssignments.Any() ? allAssignments.Max(a => a.AssignmentId) + 1 : 1;
+
+            var assignment = new TicketAssignment
+            {
+                AssignmentId = nextAssignmentId,
+                TicketId = nextTicketId,
+                TechnicianId = selectedTechnicianId,
+                AssignedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+
+            await _assignmentRepository.AddAsync(assignment);
+
+            // Notify technician
+            await CreateNotificationAsync(selectedTechnicianId, nextTicketId, "ASSIGNED",
+                $"New ticket assigned: {ticket.TicketCode}");
+
+            // Audit log
+            await LogAuditAsync(nextTicketId, "Ticket", nextTicketId, "CREATE",
+                $"Ticket {ticket.TicketCode} created and assigned to technician {selectedTechnicianId}", 
+                request.CreatedByUserId);
+
+            return ticket;
+        }
+
+        /// <summary>
+        /// Get ticket by ID
+        /// </summary>
+        public async Task<Ticket> GetTicketByIdAsync(int ticketId)
+        {
+            return await _ticketRepository.GetByIdAsync(ticketId);
+        }
     }
 }

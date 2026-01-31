@@ -26,5 +26,20 @@ namespace FixItNow.Infrastructure.Data
         public IMongoCollection<Notification> Notifications => _database.GetCollection<Notification>("Notifications");
         public IMongoCollection<Feedback> Feedbacks => _database.GetCollection<Feedback>("Feedbacks");
         public IMongoCollection<AuditLog> AuditLogs => _database.GetCollection<AuditLog>("AuditLogs");
+        
+        // ? NEW - Payment System Collections
+        public IMongoCollection<Payment> Payments => _database.GetCollection<Payment>("Payments");
+        public IMongoCollection<Invoice> Invoices => _database.GetCollection<Invoice>("Invoices");
+        public IMongoCollection<Wallet> Wallets => _database.GetCollection<Wallet>("Wallets");
+        public IMongoCollection<Transaction> Transactions => _database.GetCollection<Transaction>("Transactions");
+        public IMongoCollection<ServiceCharge> ServiceCharges => _database.GetCollection<ServiceCharge>("ServiceCharges");
+        public IMongoCollection<PaymentMethod> PaymentMethods => _database.GetCollection<PaymentMethod>("PaymentMethods");
+        public IMongoCollection<PaymentStatus> PaymentStatuses => _database.GetCollection<PaymentStatus>("PaymentStatuses");
+        
+        // ? NEW Collections
+        public IMongoCollection<ChatMessage> ChatMessages => _database.GetCollection<ChatMessage>("ChatMessages");
+        public IMongoCollection<TechnicianAvailability> TechnicianAvailabilities => _database.GetCollection<TechnicianAvailability>("TechnicianAvailabilities");
+        public IMongoCollection<TechnicianEarnings> TechnicianEarnings => _database.GetCollection<TechnicianEarnings>("TechnicianEarnings");
+        public IMongoCollection<SystemSettings> SystemSettings => _database.GetCollection<SystemSettings>("SystemSettings");
     }
 }

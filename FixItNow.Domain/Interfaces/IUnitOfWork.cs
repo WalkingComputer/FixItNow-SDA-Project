@@ -10,6 +10,25 @@ namespace FixItNow.Domain.Interfaces
         ITicketAssignmentRepository TicketAssignments { get; }
         IAuditLogRepository AuditLogs { get; }
         INotificationRepository Notifications { get; }
+        
+        // ? Payment System
+        IPaymentRepository Payments { get; }
+        IInvoiceRepository Invoices { get; }
+        IWalletRepository Wallets { get; }
+        ITransactionRepository Transactions { get; }
+        IServiceChargeRepository ServiceCharges { get; }
+        IPaymentMethodRepository PaymentMethods { get; }
+        IPaymentStatusRepository PaymentStatuses { get; }
+        
+        // ? Advanced Features
+        ICommentRepository Comments { get; }
+        IAttachmentRepository Attachments { get; }
+        IFeedbackRepository Feedbacks { get; }
+        IChatMessageRepository ChatMessages { get; }
+        ITechnicianAvailabilityRepository TechnicianAvailabilities { get; }
+        ITechnicianEarningsRepository TechnicianEarnings { get; }
+        ISystemSettingsRepository SystemSettings { get; }
+        
         Task<int> CompleteAsync();
     }
 }

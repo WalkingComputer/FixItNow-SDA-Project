@@ -11,6 +11,7 @@ namespace FixItNow.Application.Interfaces
     public interface ITicketService
     {
         Task<Ticket> CreateTicketAsync(CreateTicketRequest request);
+        Task<Ticket> CreateTicketAsync(CreateTicketRequest request, int selectedTechnicianId);
         Task AssignTicketAsync(int ticketId, int technicianId, int adminId);
         Task ChangeStatusAsync(int ticketId, TicketStatusEnum newStatus, int performedByUserId);
         Task<Comment> AddCommentAsync(int ticketId, int authorUserId, string text, bool isInternal);
@@ -18,5 +19,6 @@ namespace FixItNow.Application.Interfaces
         Task<List<Ticket>> GetTicketsByStatusAsync(int statusId);
         Task<List<Ticket>> GetMyTicketsAsync(int userId);
         Task<List<Ticket>> GetAssignedTicketsAsync(int technicianId);
+        Task<Ticket> GetTicketByIdAsync(int ticketId);
     }
 }

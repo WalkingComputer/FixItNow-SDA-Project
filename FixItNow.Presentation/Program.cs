@@ -1,4 +1,5 @@
-﻿using FixItNow.Application.Interfaces;
+﻿using FixItNow.Application.Factories;
+using FixItNow.Application.Interfaces;
 using FixItNow.Application.Services;
 using FixItNow.Domain.Interfaces;
 using FixItNow.Infrastructure.Data;
@@ -82,6 +83,13 @@ namespace FixItNow.Presentation
             services.AddScoped<INotificationFactory, NotificationFactory>();
 
             // ✨ NEW: New Services
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IAttachmentService, AttachmentService>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             // Application Services
             services.AddScoped<IAuthenticationService, AuthenticationService>();
