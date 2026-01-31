@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FixItNow.Application/FixItNow.Application.csproj" Id="72d1d117-4b90-487c-bad3-9f6bb42be105" />
+  <Project Path="FixItNow.Domain/FixItNow.Domain.csproj" Id="6cfc2e01-3bbd-43f2-b050-7e4ee0e5892d" />
+  <Project Path="FixItNow.Infrastructure/FixItNow.Infrastructure.csproj" Id="9727ed2e-d225-46ff-91f7-f6e7de695f73" />
+  <Project Path="FixItNow.Presentation/FixItNow.Presentation.csproj" Id="84ba0d9b-491e-48fb-be0e-bea66d3d9676" />
+</Solution>
