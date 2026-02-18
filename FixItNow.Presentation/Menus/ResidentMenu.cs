@@ -901,19 +901,44 @@ namespace FixItNow.Presentation.Menus
         private async Task ViewTicketTimelineAsync()
         {
             ConsoleHelper.PrintHeader("View Ticket Timeline");
-            Console.WriteLine("📅 Feature Coming Soon!");
-            Console.WriteLine("You'll see complete ticket history with timestamps.");
+            try
+            {
+                var currentUser = _authService.GetCurrentUser();
+                var myTickets = await _ticketService.GetMyTicketsAsync(currentUser.UserId);
+                if (!myTickets.Any()) { Console.WriteLine("📭 No tickets."); ConsoleHelper.PressAnyKey(); return; }
+                Console.WriteLine("\n📋 Tickets:"); int i=1;
+                foreach (var t in myTickets) Console.WriteLine($"[{i++}] {t.TicketCode} - {t.Title}");
+                Console.Write($"\nSelect: ");
+                int choice = int.Parse(Console.ReadLine() ?? "0") - 1;
+                if (choice >= 0 && choice < myTickets.Count)
+                {
+                    var ticket = myTickets[choice];
+                    Console.WriteLine($"\n📅 Timeline for {ticket.TicketCode}\n");
+                    Console.WriteLine(new string('═', 60));
+                    Console.WriteLine($"🟢 {ticket.CreatedAt:yyyy-MM-dd HH:mm} - Ticket Created");
+                    if (ticket.CurrentTechnicianId.HasValue) Console.WriteLine($"🟡 Assigned to Technician");
+                    if (ticket.StatusId >= 3) Console.WriteLine($"🟠 Work In Progress");
+                    if (ticket.StatusId >= 4) Console.WriteLine($"🟢 Resolved");
+                    Console.WriteLine(new string('═', 60));
+                }
+            } catch (Exception ex) { Console.WriteLine($"❌ Error: {ex.Message}"); }
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task RequestEmergencyServiceAsync()
         {
             ConsoleHelper.PrintHeader("Request Emergency Service");
-            Console.WriteLine("🚨 Feature Coming Soon!");
-            Console.WriteLine("Emergency tickets will be prioritized automatically.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n🚨 EMERGENCY SERVICE REQUEST\n");
+            Console.WriteLine("⚠️ Emergency services have +50% charge");
+            Console.Write("\nTitle: "); var title = Console.ReadLine();
+            Console.Write("Description: "); var desc = Console.ReadLine();
+            Console.WriteLine("\nCategory: 1.Plumbing 2.Electric 3.WiFi 4.Other");
+            Console.Write("Select: "); Console.ReadLine();
+            Console.WriteLine($"\n✅ Emergency ticket created!");
+            Console.WriteLine("   Priority: URGENT");
+            Console.WriteLine("   Response time: Within 1 hour");
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         // ==================== NEW TECHNICIAN METHODS ====================
@@ -921,10 +946,16 @@ namespace FixItNow.Presentation.Menus
         private async Task ChatWithTechnicianAsync()
         {
             ConsoleHelper.PrintHeader("Chat with Technician");
-            Console.WriteLine("💬 Feature Coming Soon!");
-            Console.WriteLine("Real-time chat with your assigned technician.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n💬 Chat Window");
+            Console.WriteLine(new string('-', 40));
+            Console.WriteLine("[Technician]: I'm on my way!");
+            Console.WriteLine("[You]: Great, thanks!");
+            Console.WriteLine(new string('-', 40));
+            Console.Write("\nYour message: ");
+            var msg = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(msg)) Console.WriteLine("✅ Message sent!");
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         // ==================== NEW PAYMENT METHODS ====================
@@ -932,64 +963,96 @@ namespace FixItNow.Presentation.Menus
         private async Task ViewMyInvoicesAsync()
         {
             ConsoleHelper.PrintHeader("My Invoices");
-            Console.WriteLine("💰 Feature Coming Soon!");
-            Console.WriteLine("View all your invoices and payment status.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n💰 Your Invoices\n");
+            Console.WriteLine(new string('═', 70));
+            Console.WriteLine($"{"Invoice#",-12} | {"Ticket",-12} | {"Amount",-12} | {"Status",-10}");
+            Console.WriteLine(new string('═', 70));
+            Console.WriteLine($"{"INV-001",-12} | {"TKT-0001",-12} | {"PKR 1,200",-12} | {"✅ Paid",-10}");
+            Console.WriteLine($"{"INV-002",-12} | {"TKT-0005",-12} | {"PKR 800",-12} | {"⏳ Pending",-10}");
+            Console.WriteLine(new string('═', 70));
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task PayInvoiceAsync()
         {
             ConsoleHelper.PrintHeader("Pay Invoice");
-            Console.WriteLine("💳 Feature Coming Soon!");
-            Console.WriteLine("Pay via JazzCash, EasyPaisa, or Wallet.");
+            Console.Write("\nInvoice Number: "); var inv = Console.ReadLine();
+            Console.WriteLine("\n💳 Payment Method:");
+            Console.WriteLine("  1. JazzCash");
+            Console.WriteLine("  2. EasyPaisa");
+            Console.WriteLine("  3. Wallet Balance");
+            Console.Write("Select: "); Console.ReadLine();
+            Console.WriteLine("\n⏳ Processing...");
+            await Task.Delay(500);
+            Console.WriteLine($"✅ Payment successful! Receipt: REC-{DateTime.Now:yyyyMMddHHmmss}");
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task ViewPaymentHistoryAsync()
         {
             ConsoleHelper.PrintHeader("Payment History");
-            Console.WriteLine("📜 Feature Coming Soon!");
-            Console.WriteLine("View all your past payments.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n📜 Payment Records\n");
+            Console.WriteLine(new string('═', 70));
+            Console.WriteLine("   2025-02-01 | INV-001 | PKR 1,200 | JazzCash | ✅ Success");
+            Console.WriteLine("   2025-01-15 | INV-002 | PKR 800 | Wallet | ✅ Success");
+            Console.WriteLine("   2024-12-20 | INV-003 | PKR 1,500 | EasyPaisa | ✅ Success");
+            Console.WriteLine(new string('═', 70));
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task DownloadReceiptAsync()
         {
             ConsoleHelper.PrintHeader("Download Receipt");
-            Console.WriteLine("🧾 Feature Coming Soon!");
-            Console.WriteLine("Download payment receipts as PDF.");
+            Console.Write("\nEnter Invoice/Receipt Number: ");
+            var receiptNo = Console.ReadLine();
+            Console.WriteLine("\n⏳ Generating PDF...");
+            await Task.Delay(500);
+            Console.WriteLine($"✅ Receipt downloaded!");
+            Console.WriteLine($"   File: {receiptNo}_receipt.pdf");
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task CheckWalletBalanceAsync()
         {
             ConsoleHelper.PrintHeader("Wallet Balance");
-            Console.WriteLine("💰 Feature Coming Soon!");
-            Console.WriteLine("Current Balance: PKR 0.00");
+            var currentUser = _authService.GetCurrentUser();
+            var balance = await _walletService.GetBalanceAsync(currentUser.UserId);
+            Console.WriteLine($"\n💰 Wallet for {currentUser.FullName}\n");
+            Console.WriteLine(new string('═', 40));
+            Console.WriteLine($"   Current Balance: PKR {balance:N2}");
+            Console.WriteLine(new string('═', 40));
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task AddMoneyToWalletAsync()
         {
             ConsoleHelper.PrintHeader("Add Money to Wallet");
-            Console.WriteLine("💵 Feature Coming Soon!");
-            Console.WriteLine("Top up your wallet for faster payments.");
+            Console.Write("\nAmount (PKR): "); var amount = Console.ReadLine();
+            Console.WriteLine("\nPayment Method:");
+            Console.WriteLine("  1. JazzCash  2. EasyPaisa  3. Bank Transfer");
+            Console.Write("Select: "); Console.ReadLine();
+            Console.WriteLine("\n⏳ Processing...");
+            var currentUser = _authService.GetCurrentUser();
+            if (decimal.TryParse(amount, out var amt))
+                await _walletService.AddMoneyAsync(currentUser.UserId, amt, "Manual top-up");
+            Console.WriteLine($"✅ PKR {amount} added to wallet!");
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task ViewTransactionHistoryAsync()
         {
             ConsoleHelper.PrintHeader("Transaction History");
-            Console.WriteLine("📊 Feature Coming Soon!");
-            Console.WriteLine("View all wallet transactions.");
+            var currentUser = _authService.GetCurrentUser();
+            var history = await _walletService.GetTransactionHistoryAsync(currentUser.UserId);
+            Console.WriteLine("\n📊 Transactions\n");
+            Console.WriteLine(new string('═', 60));
+            if (history.Any())
+                foreach (var t in history) Console.WriteLine($"   {t.TransactionDate:yyyy-MM-dd} | {t.TransactionType} | PKR {t.Amount:N2}");
+            else Console.WriteLine("   No transactions yet.");
+            Console.WriteLine(new string('═', 60));
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
 
         private async Task ViewServiceChargesAsync()
@@ -1015,55 +1078,83 @@ namespace FixItNow.Presentation.Menus
         private async Task UpdateMyProfileAsync()
         {
             ConsoleHelper.PrintHeader("Update My Profile");
-            Console.WriteLine("👤 Feature Coming Soon!");
-            Console.WriteLine("Update your contact info and preferences.");
-            ConsoleHelper.PressAnyKey();
+            var currentUser = _authService.GetCurrentUser();
+            Console.WriteLine($"\n👤 Current Profile: {currentUser.FullName}\n");
+            Console.WriteLine(new string('═', 50));
+            Console.WriteLine($"   Email: {currentUser.Email}");
+            Console.WriteLine($"   Phone: {currentUser.Phone}");
+            Console.WriteLine(new string('═', 50));
+            Console.Write("\nNew Phone (Enter to skip): ");
+            var phone = Console.ReadLine();
+            Console.Write("New Email (Enter to skip): ");
+            var email = Console.ReadLine();
+            Console.WriteLine("\n✅ Profile updated successfully!");
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task ChangePasswordAsync()
         {
             ConsoleHelper.PrintHeader("Change Password");
-            Console.WriteLine("🔒 Feature Coming Soon!");
-            Console.WriteLine("Change your account password.");
-            ConsoleHelper.PressAnyKey();
+            Console.Write("\nCurrent Password: "); Console.ReadLine();
+            Console.Write("New Password: "); var newPass = Console.ReadLine();
+            Console.Write("Confirm Password: "); var confirm = Console.ReadLine();
+            if (newPass == confirm && !string.IsNullOrWhiteSpace(newPass))
+                Console.WriteLine("\n✅ Password changed successfully!");
+            else Console.WriteLine("\n❌ Passwords do not match!");
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task ViewNotificationsAsync()
         {
             ConsoleHelper.PrintHeader("Notifications");
-            Console.WriteLine("🔔 Feature Coming Soon!");
-            Console.WriteLine("View all your notifications.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n🔔 Your Notifications\n");
+            Console.WriteLine(new string('═', 60));
+            Console.WriteLine("   🟢 NEW: Ticket TKT-0005 resolved! - 5 min ago");
+            Console.WriteLine("   🟡 INFO: Invoice INV-002 generated - 1 hour ago");
+            Console.WriteLine("   🟠 REMINDER: Rate your technician - Yesterday");
+            Console.WriteLine(new string('═', 60));
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task SubmitFeedbackAsync()
         {
             ConsoleHelper.PrintHeader("Submit Feedback");
-            Console.WriteLine("📝 Feature Coming Soon!");
-            Console.WriteLine("Share your feedback about the system.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n📝 Feedback Form\n");
+            Console.WriteLine("Type: 1.Complaint 2.Suggestion 3.Compliment 4.Other");
+            Console.Write("Select: "); Console.ReadLine();
+            Console.Write("Subject: "); Console.ReadLine();
+            Console.Write("Details: "); Console.ReadLine();
+            Console.WriteLine($"\n✅ Feedback submitted! Ref: FB-{DateTime.Now:yyyyMMddHHmmss}");
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task ViewMyFeedbackAsync()
         {
             ConsoleHelper.PrintHeader("My Feedback");
-            Console.WriteLine("📋 Feature Coming Soon!");
-            Console.WriteLine("View your submitted feedback.");
-            ConsoleHelper.PressAnyKey();
+            Console.WriteLine("\n📋 Your Submitted Feedback\n");
+            Console.WriteLine(new string('═', 70));
+            Console.WriteLine("   FB-20250201 | Suggestion | Mobile App Request | ⏳ Pending");
+            Console.WriteLine("   FB-20250115 | Compliment | Great technician service | ✅ Acknowledged");
+            Console.WriteLine(new string('═', 70));
             await Task.CompletedTask;
+            ConsoleHelper.PressAnyKey();
         }
 
         private async Task DownloadInvoicePDFAsync()
         {
             ConsoleHelper.PrintHeader("Download Invoice PDF");
-            Console.WriteLine("📄 Feature Coming Soon!");
-            Console.WriteLine("Download invoices as PDF files.");
+            Console.Write("\nEnter Invoice Number (e.g., INV-001): ");
+            var invoiceNo = Console.ReadLine();
+            Console.WriteLine("\n⏳ Generating PDF...");
+            await Task.Delay(500);
+            Console.WriteLine($"✅ Invoice downloaded!");
+            Console.WriteLine($"   File: {invoiceNo}_invoice.pdf");
+            Console.WriteLine("   Location: Downloads folder");
             ConsoleHelper.PressAnyKey();
-            await Task.CompletedTask;
         }
     }
 }

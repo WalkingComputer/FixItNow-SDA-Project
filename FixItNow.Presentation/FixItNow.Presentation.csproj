@@ -121,12 +121,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demos\DesignPatternsDemo.cs" />
     <Compile Include="Helpers\ConsoleHelper.cs" />
     <Compile Include="Menus\AdminMenu.cs" />
     <Compile Include="Menus\MainMenu.cs" />
     <Compile Include="Menus\ResidentMenu.cs" />
     <Compile Include="Menus\TechnicianMenu.cs" />
-    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -136,9 +136,6 @@
     <None Include="obj\Debug\FixItNow.Presentation.csproj.AssemblyReference.cache" />
     <None Include="obj\Debug\FixItNow.Presentation.csproj.CoreCompileInputs.cache" />
     <None Include="packages.config" />
-    <None Include="appsettings.json" xmlns="">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FixItNow.Application\FixItNow.Application.csproj">
@@ -160,10 +157,13 @@
     <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="appsettings.json" />
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="obj\Debug\FixItNow.Presentation.csproj.FileListAbsolute.txt" />
+    <None Include="obj\appsettings.json" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
